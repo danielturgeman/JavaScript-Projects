@@ -4,7 +4,7 @@
 class ArrayList{
     //constructor should take a size and default value to initialize
     //the arraylist with given value
-    constructor(capacity=0, value=0){
+    constructor(capacity=0, value=undefined){
         
         let _capacity = null;
         let _value = value;
@@ -23,8 +23,8 @@ class ArrayList{
 
             for(let i = 0; i < capacity; i++){
                 _values[i] = value;
-                _size++;
             }
+            _size = _values.length;
 
             Object.seal(_values);
         }
@@ -78,9 +78,9 @@ class ArrayList{
             Object.seal(_values);
         }
 
-        this.shiftValuesToRight = function(){
+        this.shiftValuesToRight = function(i=0){
             let startIndex = this.getSize() - 1;
-            for(startIndex; startIndex >= 0; startIndex--){
+            for(startIndex; startIndex >= i; startIndex--){
                 _values[startIndex+1] = _values[startIndex];
             }
         }
@@ -91,47 +91,71 @@ class ArrayList{
             _values[index] = value;
         }
 
+        this.insertToEmptyList = function(value){
+            let newList = new ArrayList(1, value);
+            _values = newList.getValues();
+            _capacity = newList.getCapacity();
+            _size = newList.getSize();
+        }
+
         this.prepend = function(value){
-            //list is empty nothing to copy over, can instantiate new array list
 
-            if(this.getSize() === this.getCapacity()){
-                if(this.getSize() === 0){
-                    let newList = new ArrayList(1, value);
-                    _values = newList.getValues();
-                    _capacity = newList.getCapacity();
-                    _size = newList.getSize();
-                }
-                else{
-                    this.copyValuesToNewArray();
-                    this.shiftValuesToRight();
-                    this.insertValue(0, value);
-                    _size++;
-                }
-            }
-
+            if(this.getSize() === 0) this.insertToEmptyList(value);
             else{
+                if(this.getSize() === this.getCapacity()) this.copyValuesToNewArray();
                 this.shiftValuesToRight();
-                this.insertValue(0, value);
+                _values[0] = value;
                 _size++;
             }
         }
-    
+
+        this.append = function(value){
+            if(this.getSize() === 0) this.insertToEmptyList(value);
+            else{
+                if(this.getSize() === this.getCapacity()) this.copyValuesToNewArray();
+                _values[this.getSize()] = value;
+                _size++;
+            }
+        }
+
+        this.insertAt = function(index, value){
+            if(index < 0 || index > this.getSize()) throw new Error("IndexOutOfBounds");
+
+            if(this.getSize() === 0) this.insertToEmptyList(value);
+            else{
+                if(this.getSize() === this.getCapacity()) this.copyValuesToNewArray();
+
+                if(index === 0) this.prepend(value);
+                else if(index === this.getSize()) this.append(value);
+                else{
+                    //Core functionality
+                    //Shift everything from size-1 down to and including index to the right,
+                    this.shiftValuesToRight(index);
+                    _values[index] = value;
+                    _size++;
+                    }
+                }
+
+        }
 
     }
     
 }
 
-list = new ArrayList(6,5);
-list.prepend(8);
-list.prepend(7);
+list = new ArrayList();
+list.insertAt(0, 7);
+list.insertAt(0, 7);
+list.insertAt(0, 7);
+list.append(9);
 list.prepend(6);
-list.prepend(5);
-list.prepend(4);
-
-list.prepend(3);
-list.prepend(2);
-list.prepend(1);
-
+list.insertAt(3, 4);
+list.insertAt(4, 8);
+list.insertAt(7, 0);
+list.insertAt(8, 22);
+list.prepend(0);
+list.append(15);
+list.insertAt(3,5);
+list.insertAt(3,5);
 
 
 console.log(list.getCapacity());
