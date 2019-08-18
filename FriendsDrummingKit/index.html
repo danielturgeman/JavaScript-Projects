@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+  <body>
+  	<div class="keys">
+  		<div id="0" data-key="65" class="key">
+  		  <kbd>A</kbd>
+  		  <span class="sound" id="post-malone"></span>	
+  		</div>
+  		<div id="1" data-key="83" class="key">
+  		  <kbd>S</kbd>
+  		  <span class="sound" id="drake"></span>	
+  		</div>
+  		<div id="2" data-key="68" class="key">
+  		  <kbd>D</kbd>
+  		  <span class="sound" id="future"></span>	
+  		</div>
+  		<div id="3" data-key="70" class="key">
+  		  <kbd>F</kbd>
+  		  <span class="sound" id="kodak-black"></span>	
+  		</div>
+  		<div id="4" data-key="71" class="key">
+  		  <kbd>G</kbd>
+  		  <span class="sound" id="gummo"></span>	
+  		</div>
+  	</div>
+
+  	<div class="audio-keys">
+  	  <audio data-key="65""></audio>
+  	  <audio data-key="83"></audio>
+  	  <audio data-key="68"></audio>
+  	  <audio data-key="70"></audio>
+  	  <audio data-key="71"></audio>
+  	</div>
+  </body>
+  <script>
+  	var playList = [["malone1.mp3", "malone2.mp3", "malone3.mp3"],
+  					["drake1.mp3", "drake2.mp3", "drake3.mp3"],
+  					["future1.mp3", "future2.mp3", "future3.mp3"],
+  					["kodak1.mp3", "kodak2.mp3", "kodak3.mp3"]
+  					["gummo1.mp3", "gummo2.mp3", "gummo3.mp3"]]
+
+	function stopPlaying(){
+		songs = document.querySelectorAll('audio');
+		songs.forEach(function(song){
+			song.pause();
+			song.currentTime = 0;
+		});
+	};
+
+  	window.addEventListener('keydown', function(e){
+  		stopPlaying()
+  		let audio = document.querySelector(`audio[data-key='${e.keyCode}']`);
+  		let artist = document.querySelector(`div[data-key='${e.keyCode}']`);
+  		let artistId = Number(artist.id);
+  
+  		if(!audio) return
+  		audio.currentTime = 0;
+  		audio.src = "audio/" + playList[artistId][Math.floor(Math.random() * (playList[artistId].length))];
+  		audio.play();
+  	});
+  </script>
+</html>
